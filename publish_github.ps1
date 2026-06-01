@@ -17,12 +17,30 @@ if (-not (Test-Path $git)) {
 
 $env:PATH = "$(Split-Path -Parent $git);$(Split-Path -Parent $gh);$env:PATH"
 
+function Invoke-GhWithRetry {
+    param(
+        [scriptblock]$Command,
+        [int]$Attempts = 4
+    )
+
+    for ($attempt = 1; $attempt -le $Attempts; $attempt++) {
+        $output = & $Command 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            return $output
+        }
+        if ($attempt -lt $Attempts) {
+            Start-Sleep -Seconds $attempt
+        }
+    }
+    throw "GitHub CLI command failed after $Attempts attempts."
+}
+
 & $gh auth status --hostname github.com *> $null
 if ($LASTEXITCODE -ne 0) {
     throw "GitHub CLI is not authenticated. Run login_github.cmd first."
 }
 
-$owner = (& $gh api user --jq .login).Trim()
+$owner = ([string](Invoke-GhWithRetry { & $gh api user --jq .login })).Trim()
 if (-not $owner) {
     throw "Could not determine the authenticated GitHub user."
 }
@@ -45,8 +63,8 @@ try {
 
     $origin = & $git remote 2>$null | Where-Object { $_ -eq "origin" }
     if (-not $origin) {
-        $remoteExists = $null -ne (& $gh repo view "$owner/$Repository" --json name --jq .name 2>$null)
-        if ($remoteExists) {
+        $remoteName = & $gh repo view "$owner/$Repository" --json name --jq .name 2>$null
+        if ($LASTEXITCODE -eq 0 -and $remoteName) {
             & $git remote add origin "https://github.com/$owner/$Repository.git"
         } else {
             & $gh repo create "$owner/$Repository" --public --source . --remote origin
@@ -57,14 +75,11 @@ try {
     & $git push --set-upstream origin main
     if ($LASTEXITCODE -ne 0) { throw "git push failed." }
 
-    & $gh api "repos/$owner/$Repository/pages" *> $null
-    if ($LASTEXITCODE -eq 0) {
-        & $gh api --method PUT "repos/$owner/$Repository/pages" -f build_type=workflow *> $null
+    $pages = & $gh api "repos/$owner/$Repository/pages" 2>$null
+    if ($LASTEXITCODE -eq 0 -and $pages) {
+        Invoke-GhWithRetry { & $gh api --method PUT "repos/$owner/$Repository/pages" -f build_type=workflow } *> $null
     } else {
-        & $gh api --method POST "repos/$owner/$Repository/pages" -f build_type=workflow *> $null
-    }
-    if ($LASTEXITCODE -ne 0) {
-        throw "Could not enable GitHub Pages with the GitHub Actions publishing source."
+        Invoke-GhWithRetry { & $gh api --method POST "repos/$owner/$Repository/pages" -f build_type=workflow } *> $null
     }
 
     $url = "https://$owner.github.io/$Repository/playlist.m3u"
