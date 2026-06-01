@@ -1,0 +1,394 @@
+{
+  "sources": [
+    {
+      "id": "fanmingming-ipv6",
+      "url": "https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u",
+      "default_tier": "review-required",
+      "license_scope": "public-candidate",
+      "priority": 20
+    },
+    {
+      "id": "iptv-org-us",
+      "url": "https://iptv-org.github.io/iptv/countries/us.m3u",
+      "default_tier": "review-required",
+      "license_scope": "public-candidate",
+      "priority": 30
+    },
+    {
+      "id": "iptv-org-uk",
+      "url": "https://iptv-org.github.io/iptv/countries/uk.m3u",
+      "default_tier": "review-required",
+      "license_scope": "public-candidate",
+      "priority": 30
+    },
+    {
+      "id": "free-tv",
+      "url": "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8",
+      "default_tier": "approved-candidate",
+      "license_scope": "free-tv-maintained",
+      "priority": 10
+    },
+    {
+      "id": "iptv-org-news",
+      "url": "https://iptv-org.github.io/iptv/categories/news.m3u",
+      "default_tier": "review-required",
+      "license_scope": "public-candidate",
+      "priority": 25,
+      "approved_url_prefixes": [
+        "https://live-hls-apps-aje-fa.getaj.net/AJE/",
+        "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/",
+        "https://live.france24.com/hls/live/2037218-b/F24_EN_HI_HLS/",
+        "https://tv-trtworld.medya.trt.com.tr/"
+      ]
+    }
+  ],
+  "targets": [
+    {
+      "id": "CCTV1",
+      "name": "CCTV-1综合",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?1(?:综合)?$"]
+    },
+    {
+      "id": "CCTV2",
+      "name": "CCTV-2财经",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?2(?:财经)?$"]
+    },
+    {
+      "id": "CCTV3",
+      "name": "CCTV-3综艺",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?3(?:综艺)?$"]
+    },
+    {
+      "id": "CCTV4",
+      "name": "CCTV-4中文国际",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?4(?:中文国际)?$"]
+    },
+    {
+      "id": "CCTV5",
+      "name": "CCTV-5体育",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?5(?:体育)?$"]
+    },
+    {
+      "id": "CCTV5PLUS",
+      "name": "CCTV-5+体育赛事",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?5\\+(?:体育赛事)?$", "^CCTV5PLUS$"]
+    },
+    {
+      "id": "CCTV6",
+      "name": "CCTV-6电影",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?6(?:电影)?$"]
+    },
+    {
+      "id": "CCTV7",
+      "name": "CCTV-7国防军事",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?7(?:国防军事)?$"]
+    },
+    {
+      "id": "CCTV8",
+      "name": "CCTV-8电视剧",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?8(?:电视剧)?$"]
+    },
+    {
+      "id": "CCTV9",
+      "name": "CCTV-9纪录",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?9(?:纪录)?$"]
+    },
+    {
+      "id": "CCTV10",
+      "name": "CCTV-10科教",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?10(?:科教)?$"]
+    },
+    {
+      "id": "CCTV11",
+      "name": "CCTV-11戏曲",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?11(?:戏曲)?$"]
+    },
+    {
+      "id": "CCTV12",
+      "name": "CCTV-12社会与法",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?12(?:社会与法)?$"]
+    },
+    {
+      "id": "CCTV13",
+      "name": "CCTV-13新闻",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?13(?:新闻)?$"]
+    },
+    {
+      "id": "CCTV14",
+      "name": "CCTV-14少儿",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?14(?:少儿)?$"]
+    },
+    {
+      "id": "CCTV15",
+      "name": "CCTV-15音乐",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?15(?:音乐)?$"]
+    },
+    {
+      "id": "CCTV16",
+      "name": "CCTV-16奥林匹克",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?16(?:奥林匹克)?$"]
+    },
+    {
+      "id": "CCTV17",
+      "name": "CCTV-17农业农村",
+      "category": "中国大陆·央视",
+      "aliases": ["^CCTV[- ]?17(?:农业农村)?$"]
+    },
+    {
+      "id": "CCTV4K",
+      "name": "CCTV 4K",
+      "category": "中国大陆·4K8K",
+      "aliases": ["^CCTV[- ]?(?:4K|UHD)$", "^CCTV4K$"]
+    },
+    {
+      "id": "CCTV8K",
+      "name": "CCTV 8K",
+      "category": "中国大陆·4K8K",
+      "aliases": ["^CCTV[- ]?8K$", "^CCTV8K$"]
+    },
+    {
+      "id": "BEIJING-SAT",
+      "name": "北京卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^北京卫视(?:4K)?$"]
+    },
+    {
+      "id": "DONGFANG-SAT",
+      "name": "东方卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^东方卫视(?:4K)?$"]
+    },
+    {
+      "id": "ZHEJIANG-SAT",
+      "name": "浙江卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^浙江卫视(?:4K)?$"]
+    },
+    {
+      "id": "JIANGSU-SAT",
+      "name": "江苏卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^江苏卫视(?:4K)?$"]
+    },
+    {
+      "id": "GUANGDONG-SAT",
+      "name": "广东卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^广东卫视(?:4K)?$"]
+    },
+    {
+      "id": "HUNAN-SAT",
+      "name": "湖南卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^湖南卫视(?:4K)?$"]
+    },
+    {
+      "id": "SHENZHEN-SAT",
+      "name": "深圳卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^深圳卫视(?:4K)?$"]
+    },
+    {
+      "id": "ANHUI-SAT",
+      "name": "安徽卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^安徽卫视$"]
+    },
+    {
+      "id": "SHANDONG-SAT",
+      "name": "山东卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^山东卫视(?:4K)?$"]
+    },
+    {
+      "id": "TIANJIN-SAT",
+      "name": "天津卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^天津卫视$"]
+    },
+    {
+      "id": "CHONGQING-SAT",
+      "name": "重庆卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^重庆卫视$"]
+    },
+    {
+      "id": "HUBEI-SAT",
+      "name": "湖北卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^湖北卫视$"]
+    },
+    {
+      "id": "HEILONGJIANG-SAT",
+      "name": "黑龙江卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^黑龙江卫视$"]
+    },
+    {
+      "id": "LIAONING-SAT",
+      "name": "辽宁卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^辽宁卫视$"]
+    },
+    {
+      "id": "FUJIAN-SAT",
+      "name": "东南卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^(?:东南|福建)卫视$"]
+    },
+    {
+      "id": "JIANGXI-SAT",
+      "name": "江西卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^江西卫视$"]
+    },
+    {
+      "id": "HENAN-SAT",
+      "name": "河南卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^河南卫视$"]
+    },
+    {
+      "id": "HEBEI-SAT",
+      "name": "河北卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^河北卫视$"]
+    },
+    {
+      "id": "SICHUAN-SAT",
+      "name": "四川卫视",
+      "category": "中国大陆·卫视",
+      "aliases": ["^四川卫视(?:4K)?$"]
+    },
+    {
+      "id": "CNN",
+      "name": "CNN",
+      "category": "欧美·新闻",
+      "premium": true,
+      "aliases": ["^CNN$", "^CNN International$"]
+    },
+    {
+      "id": "BBC-NEWS",
+      "name": "BBC News",
+      "category": "欧美·新闻",
+      "aliases": ["^BBC News(?: HD)?(?: Ⓖ)?$", "^BBC World News(?: Ⓢ)?$"]
+    },
+    {
+      "id": "SKY-NEWS",
+      "name": "Sky News",
+      "category": "欧美·新闻",
+      "aliases": ["^Sky News$", "^Sky News \\(UK\\)$", "^Sky News International$"]
+    },
+    {
+      "id": "ALJAZEERA-ENGLISH",
+      "name": "Al Jazeera English",
+      "category": "欧美·新闻",
+      "aliases": ["^Al Jazeera English(?: \\(1080p\\))?$", "^AlJazeera\\.qa@English$"]
+    },
+    {
+      "id": "CNBC",
+      "name": "CNBC",
+      "category": "欧美·新闻",
+      "premium": true,
+      "aliases": ["^CNBC(?: Europe)?(?: Ⓨ)?$"]
+    },
+    {
+      "id": "FOX-NEWS",
+      "name": "Fox News",
+      "category": "欧美·新闻",
+      "premium": true,
+      "aliases": ["^Fox News(?: Channel)?(?: \\(720p\\))?(?: \\[Not 24/7\\])?$"]
+    },
+    {
+      "id": "BLOOMBERG",
+      "name": "Bloomberg Television",
+      "category": "欧美·新闻",
+      "aliases": ["^Bloomberg$", "^Bloomberg TV$", "^Bloomberg Television(?: \\(US\\)| \\(Europe\\))?$"]
+    },
+    {
+      "id": "DW-ENGLISH",
+      "name": "DW English",
+      "category": "欧美·新闻",
+      "aliases": ["^DW$", "^DW English$"]
+    },
+    {
+      "id": "FRANCE24-ENGLISH",
+      "name": "France 24 English",
+      "category": "欧美·新闻",
+      "aliases": ["^France 24$", "^France 24 English(?: \\(1080p\\))?$", "^France24English(?:\\.fr)?$"]
+    },
+    {
+      "id": "CGTN-ENGLISH",
+      "name": "CGTN English",
+      "category": "国际·新闻",
+      "aliases": ["^CGTN(?: \\(1080p\\))?$", "^CGTN\\.cn@SD$"]
+    },
+    {
+      "id": "EURONEWS-ENGLISH",
+      "name": "Euronews English",
+      "category": "欧美·新闻",
+      "aliases": ["^Euronews English(?: HD)?$", "^EuronewsEnglish\\.fr@HD$"]
+    },
+    {
+      "id": "NHK-WORLD",
+      "name": "NHK World-Japan",
+      "category": "国际·新闻",
+      "aliases": ["^NHK World-Japan(?: HD)?(?: \\(1080p\\))?(?: \\[Geo-blocked\\])?$"]
+    },
+    {
+      "id": "TRT-WORLD",
+      "name": "TRT World",
+      "category": "国际·新闻",
+      "aliases": ["^TRT World(?: HD)?(?: \\(1080p\\))?(?: \\[Not 24/7\\])?$"]
+    },
+    {
+      "id": "BBC-ONE",
+      "name": "BBC One",
+      "category": "欧美·主流",
+      "aliases": ["^BBC One(?: Ⓖ)?$", "^BBC One London(?: \\(1080p\\))?(?: \\[Geo-blocked\\])?$"]
+    },
+    {
+      "id": "BBC-TWO",
+      "name": "BBC Two",
+      "category": "欧美·主流",
+      "aliases": ["^BBC Two(?: HD)?(?: Ⓖ)?(?: \\(1080p\\))?(?: \\[Geo-[Bb]locked\\])?$"]
+    },
+    {
+      "id": "BBC-UHD",
+      "name": "BBC UHD",
+      "category": "欧美·4K",
+      "aliases": ["^BBC UHD [1-5](?: \\(2160p\\))?(?: \\[Geo-blocked\\])?(?: \\[Not 24/7\\])?$"]
+    },
+    {
+      "id": "HBO",
+      "name": "HBO",
+      "category": "欧美·付费实验",
+      "premium": true,
+      "aliases": ["^HBO(?: HD)?$"]
+    },
+    {
+      "id": "DISCOVERY",
+      "name": "Discovery Channel",
+      "category": "欧美·付费实验",
+      "premium": true,
+      "aliases": ["^Discovery(?: Channel)?(?: HD)?$"]
+    }
+  ]
+}

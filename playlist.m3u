@@ -1,0 +1,7 @@
+#EXTM3U
+#EXTINF:-1 tvg-name="TRT World" tvg-logo="https://i.imgur.com/JEA2xpv.png" tvg-id="TRTWorld.tr" tvg-chno="12" tvg-country="TR" group-title="Turkey" x-probe-status="healthy" x-height="1440" x-score="2973826" x-source="free-tv" x-channel-id="TRT-WORLD" x-review-tier="approved-candidate" x-original-tier="approved-candidate" x-license-scope="free-tv-maintained" x-category="国际·新闻",TRT World
+https://tv-trtworld.medya.trt.com.tr/master.m3u8
+#EXTINF:-1 tvg-id="AlJazeera.qa@English" tvg-logo="https://i.imgur.com/7bRVpnu.png" group-title="News" x-probe-status="healthy" x-height="1080" x-score="2969069" x-source="iptv-org-news" x-channel-id="ALJAZEERA-ENGLISH" x-review-tier="approved-candidate" x-original-tier="review-required" x-license-scope="public-candidate" x-category="欧美·新闻",Al Jazeera English (1080p)
+https://live-hls-apps-aje-fa.getaj.net/AJE/index.m3u8
+#EXTINF:-1 tvg-id="France24.fr@English" tvg-logo="https://xstreamcp-assets-msp.streamready.in/assets/LIVETV/LIVECHANNEL/LIVETV_LIVETVCHANNEL_FRANCE_24/images/LOGO_HD/image.png" group-title="News" x-probe-status="healthy" x-height="1080" x-score="2990766" x-source="iptv-org-news" x-channel-id="FRANCE24-ENGLISH" x-review-tier="approved-candidate" x-original-tier="review-required" x-license-scope="public-candidate" x-category="欧美·新闻",France 24 English (1080p)
+https://live.france24.com/hls/live/2037218-b/F24_EN_HI_HLS/master_5000.m3u8
