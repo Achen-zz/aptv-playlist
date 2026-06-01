@@ -43,10 +43,10 @@ try {
         if ($LASTEXITCODE -ne 0) { throw "git commit failed." }
     }
 
-    & $git remote get-url origin *> $null
-    if ($LASTEXITCODE -ne 0) {
-        & $gh repo view "$owner/$Repository" *> $null
-        if ($LASTEXITCODE -eq 0) {
+    $origin = & $git remote 2>$null | Where-Object { $_ -eq "origin" }
+    if (-not $origin) {
+        $remoteExists = $null -ne (& $gh repo view "$owner/$Repository" --json name --jq .name 2>$null)
+        if ($remoteExists) {
             & $git remote add origin "https://github.com/$owner/$Repository.git"
         } else {
             & $gh repo create "$owner/$Repository" --public --source . --remote origin
