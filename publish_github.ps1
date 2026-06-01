@@ -63,7 +63,7 @@ try {
 
     $origin = & $git remote 2>$null | Where-Object { $_ -eq "origin" }
     if (-not $origin) {
-        $remoteName = & $gh repo view "$owner/$Repository" --json name --jq .name 2>$null
+        $remoteName = & cmd.exe /d /c "`"$gh`" api `"repos/$owner/$Repository`" --jq .name 2>nul"
         if ($LASTEXITCODE -eq 0 -and $remoteName) {
             & $git remote add origin "https://github.com/$owner/$Repository.git"
         } else {
@@ -75,7 +75,7 @@ try {
     & $git push --set-upstream origin main
     if ($LASTEXITCODE -ne 0) { throw "git push failed." }
 
-    $pages = & $gh api "repos/$owner/$Repository/pages" 2>$null
+    $pages = & cmd.exe /d /c "`"$gh`" api `"repos/$owner/$Repository/pages`" 2>nul"
     if ($LASTEXITCODE -eq 0 -and $pages) {
         Invoke-GhWithRetry { & $gh api --method PUT "repos/$owner/$Repository/pages" -f build_type=workflow } *> $null
     } else {
