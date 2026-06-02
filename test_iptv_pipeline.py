@@ -119,6 +119,23 @@ class PublishSnapshotTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             ensure_public_entry(entry)
 
+    def test_expanded_playlist_allows_review_but_rejects_premium(self) -> None:
+        review = PlaylistEntry(
+            "-1",
+            {"x-review-tier": "review-required"},
+            "review",
+            "https://example.test/review.m3u8",
+        )
+        premium = PlaylistEntry(
+            "-1",
+            {"x-review-tier": "experimental-premium"},
+            "premium",
+            "https://example.test/premium.m3u8",
+        )
+        ensure_public_entry(review, {"approved-candidate", "review-required"})
+        with self.assertRaises(ValueError):
+            ensure_public_entry(premium, {"approved-candidate", "review-required"})
+
     def test_snapshot_contains_only_public_artifacts(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as temp_dir:
             temp = Path(temp_dir)
@@ -137,7 +154,15 @@ class PublishSnapshotTests(unittest.TestCase):
             self.assertEqual(status["channel_count"], 1)
             self.assertEqual(
                 {path.name for path in output.iterdir()},
-                {".nojekyll", "epg.xml", "index.html", "playlist.m3u", "status.json"},
+                {
+                    ".nojekyll",
+                    "epg.xml",
+                    "index.html",
+                    "playlist-expanded.m3u",
+                    "playlist-ipv6.m3u",
+                    "playlist.m3u",
+                    "status.json",
+                },
             )
 
 

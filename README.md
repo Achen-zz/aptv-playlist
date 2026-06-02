@@ -15,6 +15,11 @@ entries from experimental candidates.
 - `health_report.json`: local probe details.
 - `playlist.m3u`: formal playlist. Only approved, playable, non-sensitive URLs
   are eligible.
+- `playlist-expanded.m3u`: broader APTV list. It includes non-premium IPv4
+  candidates without sensitive credentials, including entries that may work
+  differently from the GitHub Actions network.
+- `playlist-ipv6.m3u`: domestic IPv6 candidates for a later IPv6-capable home
+  network.
 - `experimental.m3u`: local review list. Paid-channel candidates, IPv6-only
   entries, failed entries, and unselected alternatives stay here.
 - `epg.xml`: placeholder for a later approved XMLTV merge.
@@ -28,6 +33,9 @@ Windows:
 ```bat
 run_pipeline.cmd
 ```
+
+The local helper refreshes playlist files only. GitHub Actions creates the
+Pages snapshot in its Linux runner to avoid OneDrive placeholder-file locks.
 
 Quick smoke run:
 
@@ -60,6 +68,18 @@ GitHub Actions, use:
 https://<github-user>.github.io/<repository>/playlist.m3u
 ```
 
+For a broader manual-selection list in APTV, use:
+
+```text
+https://<github-user>.github.io/<repository>/playlist-expanded.m3u
+```
+
+When home IPv6 is available, add:
+
+```text
+https://<github-user>.github.io/<repository>/playlist-ipv6.m3u
+```
+
 The included Windows helpers perform that setup:
 
 ```bat
@@ -71,5 +91,5 @@ publish_github.cmd
 
 `raw.m3u`, `experimental.m3u`, and health reports are local review artifacts.
 Do not publish them. Do not add DRM bypasses, login-token extraction, cookies,
-or private subscription credentials. If a later GitHub Pages job is added,
-publish only `playlist.m3u` and an approved `epg.xml`.
+or private subscription credentials. The expanded public list still excludes
+paid-channel experiments and sensitive credentials.

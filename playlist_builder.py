@@ -25,11 +25,13 @@ ROOT = Path(__file__).resolve().parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from fetch_raw import PlaylistEntry, parse_m3u, render_entry, utc_now, write_json
+from fetch_raw import PlaylistEntry, parse_m3u, render_entry, utc_now, write_json, write_text_atomic
 
 
 DEFAULT_RAW = ROOT / "raw.m3u"
 DEFAULT_FORMAL = ROOT / "playlist.m3u"
+DEFAULT_EXPANDED = ROOT / "playlist-expanded.m3u"
+DEFAULT_IPV6 = ROOT / "playlist-ipv6.m3u"
 DEFAULT_EXPERIMENTAL = ROOT / "experimental.m3u"
 DEFAULT_REPORT = ROOT / "health_report.json"
 DEFAULT_STATE = ROOT / "health_state.json"
@@ -269,7 +271,7 @@ def write_playlist(path: Path, entries: list[tuple[PlaylistEntry, dict[str, str]
     lines = ["#EXTM3U"]
     for entry, extra_attrs in entries:
         lines.extend(render_entry(entry, extra_attrs))
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    write_text_atomic(path, "\n".join(lines) + "\n")
 
 
 def ensure_epg_placeholder(path: Path) -> None:
@@ -318,6 +320,38 @@ def publication_probe(probe: dict[str, Any], state_record: dict[str, Any]) -> tu
     return "excluded", None
 
 
+def playlist_attrs(
+    probe: dict[str, Any],
+    publish_status: str,
+    effective_probe: dict[str, Any] | None,
+    failure_count: int,
+) -> dict[str, str]:
+    attrs = {
+        "x-probe-status": publish_status if effective_probe is not None else probe["status"],
+        "x-failure-count": str(failure_count),
+    }
+    if effective_probe is not None:
+        attrs.update(
+            {
+                "x-height": str(effective_probe.get("height", 0)),
+                "x-score": str(score_probe(effective_probe)),
+            }
+        )
+    return attrs
+
+
+def expanded_sort_key(item: tuple[PlaylistEntry, dict[str, str]]) -> tuple:
+    entry, attrs = item
+    status_order = {"healthy": 0, "stale": 1, "success": 0, "failed": 2}
+    return (
+        status_order.get(attrs.get("x-probe-status", ""), 3),
+        entry.attrs.get("x-category", ""),
+        entry.attrs.get("x-channel-id", ""),
+        entry.attrs.get("x-review-tier", ""),
+        entry.name,
+    )
+
+
 def build(args: argparse.Namespace) -> dict[str, Any]:
     ffprobe = locate_ffprobe(args.ffprobe)
     raw_entries = parse_m3u(args.raw.read_text(encoding="utf-8-sig"))
@@ -342,6 +376,8 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
 
     report_entries: list[dict[str, Any]] = []
     publishable_by_channel: dict[str, list[tuple[PlaylistEntry, dict[str, Any], str]]] = defaultdict(list)
+    expanded: list[tuple[PlaylistEntry, dict[str, str]]] = []
+    ipv6: list[tuple[PlaylistEntry, dict[str, str]]] = []
     experimental: list[tuple[PlaylistEntry, dict[str, str]]] = []
     for entry in raw_entries:
         key = entry_key(entry)
@@ -357,6 +393,12 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             state_record = update_state(state, entry, probe, checked_at)
         publish_status, effective_probe = publication_probe(probe, state_record)
         credentials_blocked = has_sensitive_credentials(entry)
+        generated_attrs = playlist_attrs(
+            probe,
+            publish_status,
+            effective_probe,
+            int(state_record.get("consecutive_failures", 0)),
+        )
         if (
             tier == "approved-candidate"
             and effective_probe is not None
@@ -365,6 +407,10 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             publishable_by_channel[entry.attrs.get("x-channel-id", entry.name)].append(
                 (entry, effective_probe, publish_status)
             )
+        if tier in {"approved-candidate", "review-required"} and not credentials_blocked:
+            expanded.append((entry, generated_attrs))
+        if tier == "ipv6-unavailable" and not credentials_blocked:
+            ipv6.append((entry, generated_attrs))
         report_entries.append(
             {
                 "channel_id": entry.attrs.get("x-channel-id", ""),
@@ -409,6 +455,8 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         )
 
     formal.sort(key=lambda item: (item[0].attrs.get("x-category", ""), item[0].attrs.get("x-channel-id", "")))
+    expanded.sort(key=expanded_sort_key)
+    ipv6.sort(key=lambda item: (item[0].attrs.get("x-category", ""), item[0].attrs.get("x-channel-id", "")))
     experimental.sort(
         key=lambda item: (
             item[0].attrs.get("x-review-tier", ""),
@@ -417,6 +465,8 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         )
     )
     write_playlist(args.formal, formal)
+    write_playlist(args.expanded, expanded)
+    write_playlist(args.ipv6, ipv6)
     write_playlist(args.experimental, experimental)
     write_json(args.state, state)
     ensure_epg_placeholder(args.epg)
@@ -426,6 +476,8 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "raw_entries": len(raw_entries),
         "probed_entries": len(selected_for_probe),
         "formal_entries": len(formal),
+        "expanded_entries": len(expanded),
+        "ipv6_entries": len(ipv6),
         "experimental_entries": len(experimental),
         "probe_statuses": dict(Counter(item["probe"]["status"] for item in report_entries)),
         "entries": report_entries,
@@ -438,6 +490,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--raw", type=Path, default=DEFAULT_RAW)
     parser.add_argument("--formal", type=Path, default=DEFAULT_FORMAL)
+    parser.add_argument("--expanded", type=Path, default=DEFAULT_EXPANDED)
+    parser.add_argument("--ipv6", type=Path, default=DEFAULT_IPV6)
     parser.add_argument("--experimental", type=Path, default=DEFAULT_EXPERIMENTAL)
     parser.add_argument("--report", type=Path, default=DEFAULT_REPORT)
     parser.add_argument("--state", type=Path, default=DEFAULT_STATE)
@@ -460,7 +514,8 @@ def main(argv: list[str] | None = None) -> int:
     report = build(args)
     print(
         f"Probed {report['probed_entries']} of {report['raw_entries']} candidates; "
-        f"wrote {report['formal_entries']} formal and {report['experimental_entries']} experimental entries."
+        f"wrote {report['formal_entries']} formal, {report['expanded_entries']} expanded, "
+        f"{report['ipv6_entries']} IPv6, and {report['experimental_entries']} experimental entries."
     )
     return 0
 

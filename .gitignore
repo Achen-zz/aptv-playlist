@@ -4,6 +4,8 @@ __pycache__/
 health_state.json
 health_report.json
 experimental.m3u
+playlist-expanded.m3u
+playlist-ipv6.m3u
 raw.m3u
 raw_report.json
 public/

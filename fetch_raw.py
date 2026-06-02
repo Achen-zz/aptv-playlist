@@ -7,9 +7,11 @@ import argparse
 import copy
 import datetime as dt
 import json
+import os
 import re
 import socket
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -58,10 +60,29 @@ def load_json(path: Path) -> dict[str, Any]:
         return json.load(handle)
 
 
+def write_text_atomic(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w",
+            encoding="utf-8",
+            newline="\n",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as handle:
+            temporary_path = Path(handle.name)
+            handle.write(text)
+        os.replace(temporary_path, path)
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
+
+
 def write_json(path: Path, payload: Any) -> None:
-    with path.open("w", encoding="utf-8", newline="\n") as handle:
-        json.dump(payload, handle, ensure_ascii=False, indent=2)
-        handle.write("\n")
+    write_text_atomic(path, json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
 
 
 def split_unquoted_comma(value: str) -> tuple[str, str]:
@@ -130,7 +151,7 @@ def write_m3u(path: Path, entries: Iterable[PlaylistEntry], header: str = "#EXTM
     lines = [header]
     for entry in entries:
         lines.extend(render_entry(entry))
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    write_text_atomic(path, "\n".join(lines) + "\n")
 
 
 def has_ipv6_literal(url: str) -> bool:
